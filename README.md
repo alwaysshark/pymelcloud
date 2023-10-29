@@ -153,7 +153,7 @@ inteface.
 * `target_tank_temperature`
 * `operation_mode`
 * `zone_1_target_temperature`
-* `zone_2_target_tempeature`
+* `zone_2_target_temperature`
 
 Zone target temperatures can also be set via the `Zone` object
 returned by `zones` property on `AtwDevice`.
