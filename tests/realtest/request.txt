@@ -1,0 +1,5 @@
+GET https://app.melcloud.com/Mitsubishi.Wifi.Client/Device/Get?id=68540614&buildingID=552945
+x-mitscontextkey: aaaaaaaaaa
+
+GET https://app.melcloud.com/Mitsubishi.Wifi.Client/user/ListDevices?id=68540614&buildingID=552945
+x-mitscontextkey: aaaaaaaaaa
