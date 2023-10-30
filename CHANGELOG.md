@@ -7,10 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - Add report based daily energy consumption for all devices.
+- ATW pump frequency
 
 ### Changed
 - Guard against zero Ata device energy meter reading. Latest firmware returns occasional zeroes breaking energy consumption integrations.
 - Round temperatures being set to the nearest temperature_increment using round half up.
+- Fix zones properties
 
 ## [2.11.0] - 2021-10-03
 ### Added

@@ -79,7 +79,9 @@ one has the time to go through the source.
   * `status`
   * `room_temperature`
   * `target_temperature`
+  * `target_hc_temperature`
 * `status`
+* `heat_pump_frequency`
 * `operation_mode`
 * available `operation_modes`
 
