@@ -58,8 +58,8 @@ async def test_1zone():
     assert zones[0].zone_index == 1
     assert zones[0].room_temperature is None
     assert zones[0].target_temperature is None
-    assert zones[0].flow_temperature == 57.5
-    assert zones[0].return_temperature == 53.0
+    assert zones[0].flow_temperature == 28.0 #57.5
+    assert zones[0].return_temperature == 26.0 #53.0
     assert zones[0].target_flow_temperature is None
     assert zones[0].operation_mode is None
     assert zones[0].operation_modes == [
@@ -128,8 +128,8 @@ async def test_2zone():
     assert zones[0].zone_index == 1
     assert zones[0].room_temperature is None
     assert zones[0].target_temperature is None
-    assert zones[0].flow_temperature == 36.0
-    assert zones[0].return_temperature == 30.0
+    assert zones[0].flow_temperature == 29.0
+    assert zones[0].return_temperature == 27.0
     assert zones[0].target_flow_temperature is None
     assert zones[0].operation_mode is None
     assert zones[0].operation_modes == [
@@ -143,8 +143,8 @@ async def test_2zone():
     assert zones[1].zone_index == 2
     assert zones[1].room_temperature is None
     assert zones[1].target_temperature is None
-    assert zones[1].flow_temperature == 36.0
-    assert zones[1].return_temperature == 30.0
+    assert zones[1].flow_temperature == 28.0
+    assert zones[1].return_temperature == 26.0
     assert zones[1].target_flow_temperature is None
     assert zones[1].operation_mode is None
     assert zones[1].operation_modes == [
@@ -226,8 +226,8 @@ async def test_2zone_cancool():
     assert zones[0].zone_index == 1
     assert zones[0].room_temperature is None
     assert zones[0].target_temperature is None
-    assert zones[0].flow_temperature == 50.5
-    assert zones[0].return_temperature == 50.5
+    assert zones[0].flow_temperature == 22.0
+    assert zones[0].return_temperature == 21.0
     assert zones[0].target_flow_temperature is None
     assert zones[0].operation_mode is None
     assert zones[0].operation_modes == [
@@ -243,8 +243,8 @@ async def test_2zone_cancool():
     assert zones[1].zone_index == 2
     assert zones[1].room_temperature is None
     assert zones[1].target_temperature is None
-    assert zones[1].flow_temperature == 50.5
-    assert zones[1].return_temperature == 50.5
+    assert zones[1].flow_temperature == 21.0
+    assert zones[1].return_temperature == 21.0
     assert zones[1].target_flow_temperature is None
     assert zones[1].operation_mode is None
     assert zones[1].operation_modes == [
@@ -295,3 +295,98 @@ async def test_2zone_cancool():
         ZONE_OPERATION_MODE_COOL_FLOW,
     ]
     assert zones[1].status == ZONE_STATUS_IDLE
+
+@pytest.mark.asyncio
+async def test_2zone2023():
+    device = _build_device("atw_2zone_listdevice2023.json", "atw_2zone_get2023.json")
+
+    assert device.name == "Heat pump"
+    assert device.device_type == DEVICE_TYPE_ATW
+    assert device.temperature_increment == 0.5
+
+    assert device.operation_mode is None
+    assert device.operation_modes == [
+        OPERATION_MODE_AUTO,
+        OPERATION_MODE_FORCE_HOT_WATER,
+    ]
+    assert device.tank_temperature is None
+    assert device.status is STATUS_UNKNOWN
+    assert device.target_tank_temperature is None
+    assert device.target_tank_temperature_min == 40
+    assert device.target_tank_temperature_max == 60
+    assert device.flow_temperature_boiler == 25
+    assert device.return_temperature_boiler == 25
+    assert device.mixing_tank_temperature == 0
+    assert device.holiday_mode is None
+    assert device.wifi_signal == -37
+    assert device.has_error is False
+    assert device.error_code is None
+
+    zones = device.zones
+
+    assert len(zones) == 2
+    assert zones[0].name == "Downstairs"
+    assert zones[0].zone_index == 1
+    assert zones[0].room_temperature is None
+    assert zones[0].target_temperature is None
+    assert zones[0].flow_temperature == 29.0
+    assert zones[0].return_temperature == 27.0
+    assert zones[0].target_flow_temperature is None
+    assert zones[0].operation_mode is None
+    assert zones[0].operation_modes == [
+        ZONE_OPERATION_MODE_HEAT_THERMOSTAT,
+        ZONE_OPERATION_MODE_HEAT_FLOW,
+        ZONE_OPERATION_MODE_CURVE,
+    ]
+    assert zones[0].status == ZONE_STATUS_UNKNOWN
+
+    assert zones[1].name == "Upstairs"
+    assert zones[1].zone_index == 2
+    assert zones[1].room_temperature is None
+    assert zones[1].target_temperature is None
+    assert zones[1].flow_temperature == 28.0
+    assert zones[1].return_temperature == 26.0
+    assert zones[1].target_flow_temperature is None
+    assert zones[1].operation_mode is None
+    assert zones[1].operation_modes == [
+        ZONE_OPERATION_MODE_HEAT_THERMOSTAT,
+        ZONE_OPERATION_MODE_HEAT_FLOW,
+        ZONE_OPERATION_MODE_CURVE,
+    ]
+    assert zones[1].status == ZONE_STATUS_UNKNOWN
+
+    await device.update()
+
+    assert device.operation_mode == OPERATION_MODE_AUTO
+    assert device.status == STATUS_HEAT_ZONES
+    assert device.tank_temperature == 49.5
+    assert device.target_tank_temperature == 50.0
+    assert device.flow_temperature_boiler == 25
+    assert device.return_temperature_boiler == 25
+    assert device.mixing_tank_temperature == 0
+    assert device.holiday_mode is False
+    assert device.wifi_signal == -37
+    assert device.has_error is False
+    assert device.error_code == 8000
+
+    assert zones[0].room_temperature == 20.5
+    assert zones[0].target_temperature == 19.5
+    assert zones[0].target_flow_temperature == 25.0
+    assert zones[0].operation_mode == ZONE_OPERATION_MODE_HEAT_THERMOSTAT
+    assert zones[0].operation_modes == [
+        ZONE_OPERATION_MODE_HEAT_THERMOSTAT,
+        ZONE_OPERATION_MODE_HEAT_FLOW,
+        ZONE_OPERATION_MODE_CURVE,
+    ]
+    assert zones[0].status == ZONE_STATUS_HEAT
+
+    assert zones[1].room_temperature == 19.5
+    assert zones[1].target_temperature == 18
+    assert zones[1].target_flow_temperature == 25.0
+    assert zones[1].operation_mode == ZONE_OPERATION_MODE_HEAT_THERMOSTAT
+    assert zones[1].operation_modes == [
+        ZONE_OPERATION_MODE_HEAT_THERMOSTAT,
+        ZONE_OPERATION_MODE_HEAT_FLOW,
+        ZONE_OPERATION_MODE_CURVE,
+    ]
+    assert zones[1].status == ZONE_STATUS_HEAT

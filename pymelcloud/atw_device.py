@@ -161,7 +161,10 @@ class Zone:
         This value is not available in the standard state poll response. The poll
         update frequency can be a little bit lower that expected.
         """
-        return self._device_conf()["Device"]["FlowTemperature"]
+        temp = self._device_conf()["Device"].get(f"FlowTemperatureZone{self.zone_index}")
+        if temp is None:
+            return self._device_conf()["Device"]["FlowTemperature"] #backward compatibility if it is needed
+        return temp
 
     @property
     def return_temperature(self) -> float:
@@ -170,7 +173,15 @@ class Zone:
         This value is not available in the standard state poll response. The poll
         update frequency can be a little bit lower that expected.
         """
-        return self._device_conf()["Device"]["ReturnTemperature"]
+        temp = self._device_conf()["Device"].get(f"ReturnTemperatureZone{self.zone_index}")
+        if temp is None:
+            return self._device_conf()["Device"]["ReturnTemperature"] #backward compatibility if it is needed
+        return temp
+
+    @property
+    def target_hc_temperature(self) -> Optional[float]:
+        """Return current target HC flow temperature."""
+        return self._device_conf()["Device"].get(f"TargetHCTemperatureZone{self.zone_index}")
 
     @property
     def target_flow_temperature(self) -> Optional[float]:
@@ -382,6 +393,11 @@ class AtwDevice(Device):
     def mixing_tank_temperature(self) -> Optional[float]:
         """Return mixing tank temperature."""
         return self.get_device_prop("MixingTankWaterTemperature")
+
+    @property
+    def heat_pump_frequency(self) -> Optional[float]:
+        """Return heat pump frequency."""
+        return self.get_device_prop("HeatPumpFrequency")
 
     @property
     def zones(self) -> Optional[List[Zone]]:
