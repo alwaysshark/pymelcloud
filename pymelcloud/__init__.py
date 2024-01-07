@@ -28,7 +28,7 @@ async def get_devices(
     token: str,
     session: Optional[ClientSession] = None,
     *,
-    conf_update_interval=timedelta(minutes=5),
+    conf_update_interval=timedelta(minutes=1),
     device_set_debounce=timedelta(seconds=1),
 ) -> Dict[str, List[Device]]:
     """Initialize Devices available with the token.
