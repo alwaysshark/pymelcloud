@@ -386,15 +386,24 @@ class AtwDevice(Device):
 
     @property
     def return_temperature_boiler(self) -> Optional[float]:
-        """Return flow temperature of the boiler."""
-        return self.get_device_prop("FlowTemperatureBoiler")
+        """Return return temperature of the boiler."""
+        return self.get_device_prop("ReturnTemperatureBoiler")
 
+    @property
+    def flow_temperature(self) -> Optional[float]:
+        """Return flow temperature of the ASHP."""
+        return self.get_device_prop("FlowTemperature")
+
+    @property
+    def return_temperature(self) -> Optional[float]:
+        """Return return temperature of the ASHP."""
+        return self.get_device_prop("ReturnTemperature")
+    
     @property
     def mixing_tank_temperature(self) -> Optional[float]:
         """Return mixing tank temperature."""
         return self.get_device_prop("MixingTankWaterTemperature")
 
-    @property
     def heat_pump_frequency(self) -> Optional[float]:
         """Return heat pump frequency."""
         return self.get_device_prop("HeatPumpFrequency")
